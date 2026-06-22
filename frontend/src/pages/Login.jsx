@@ -22,7 +22,7 @@ const Login = () => {
 
       localStorage.setItem('jwtToken', response.data.jwtToken)
 
-      navigate('/')
+      navigate('/', {replace: true})
     } catch (error) {
       alert('Invalid Credentials')
     }

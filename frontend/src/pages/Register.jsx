@@ -24,7 +24,7 @@ const Register = () => {
 
       alert('Registration Successful')
 
-      navigate('/login')
+      navigate('/login', {replace: true})
     } catch (error) {
       alert(error.response?.data?.message || error.message)
     }

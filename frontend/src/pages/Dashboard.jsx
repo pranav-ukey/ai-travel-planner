@@ -61,7 +61,7 @@ const Dashboard = () => {
 
   const onClickLogout = () => {
     localStorage.removeItem('jwtToken')
-    navigate('/login')
+    navigate('/login', {replace: true})
   }
 
   return (

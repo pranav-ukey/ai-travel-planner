@@ -4,14 +4,21 @@ require('dotenv').config()
 const connectDB = require('./config/db')
 
 const authRoutes = require('./routes/authRoutes')
-const authenticateToken = require('./middleware/authenticateToken')
 const tripRoutes = require('./routes/tripRoutes')
 
 connectDB()
 
 const app = express()
 
-app.use(cors())
+app.use(
+  cors({
+    origin: [
+      'https://ai-travel-planner-three-dun.vercel.app',
+      'http://localhost:5173',
+    ],
+  }),
+)
+
 app.use(express.json())
 
 app.use('/api/auth', authRoutes)
@@ -25,12 +32,4 @@ const PORT = process.env.PORT || 5000
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
-})
-
-
-app.get('/api/test', authenticateToken, (request, response) => {
-  response.json({
-    message: 'Protected route accessed',
-    user: request.user,
-  })
 })

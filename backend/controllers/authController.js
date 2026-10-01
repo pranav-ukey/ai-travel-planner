@@ -6,8 +6,29 @@ const register = async (request, response) => {
   try {
     const {name, email, password} = request.body
 
-    const user = await User.findOne({email})
+    if (!name || !name.trim()) {
+      return response.status(400).json({
+        message: 'Name is required',
+      })
+    }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!email || !emailRegex.test(email)) {
+      return response.status(400).json({
+        message: 'Please enter a valid email',
+      })
+    }
+
+    if (!password || password.length < 6) {
+      return response.status(400).json({
+        message: 'Password must be at least 6 characters',
+      })
+    }
+
+
+    const user = await User.findOne({email})
+    
     if (user) {
       return response.status(400).json({
         message: 'User already exists',
@@ -58,7 +79,7 @@ const login = async (request, response) => {
       id: user._id,
     }
 
-    const jwtToken = jwt.sign(payload, process.env.JWT_SECRET)
+    const jwtToken = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: '1d'})
 
     response.status(200).json({
       jwtToken,

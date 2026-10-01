@@ -6,6 +6,7 @@ const TripDetails = () => {
   const {id} = useParams()
 
   const [trip, setTrip] = useState(null)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     fetchTrip()
@@ -27,7 +28,25 @@ const TripDetails = () => {
       setTrip(response.data)
     } catch (error) {
       console.log(error)
+      setError(true)
     }
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center">
+        <h1 className="text-3xl font-bold mb-4">
+          Trip not found
+        </h1>
+
+        <a
+          href="/dashboard"
+          className="text-blue-600 hover:underline"
+        >
+          Back to Dashboard
+        </a>
+      </div>
+    )
   }
 
   if (!trip) {

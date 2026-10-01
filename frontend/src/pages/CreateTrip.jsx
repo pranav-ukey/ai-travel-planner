@@ -44,10 +44,8 @@ const CreateTrip = () => {
         },
       )
 
-      setTimeout(() => {
-        setIsGenerating(false)
-        navigate(`/trip/${response.data._id}`)
-      }, 2500)
+      setIsGenerating(false)
+      navigate(`/trip/${response.data._id}`)
     } catch (error) {
       console.log(error)
       setIsGenerating(false)

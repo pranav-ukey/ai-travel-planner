@@ -9,12 +9,41 @@ const generateTrip = async (request, response) => {
   try {
     const {destination, durationDays, budgetTier, interests} = request.body
 
+    if (!destination || !destination.trim()) {
+      return response.status(400).json({
+        message: 'Destination is required',
+      })
+    }
+
+    if (!Number.isInteger(durationDays) || durationDays < 1 || durationDays > 14) {
+      return response.status(400).json({
+        message: 'Duration must be between 1 and 14 days',
+      })
+    }
+
+    const validBudgetTiers = ['Low', 'Medium', 'High']
+
+    if (!validBudgetTiers.includes(budgetTier)) {
+      return response.status(400).json({
+        message: 'Budget tier must be Low, Medium, or High',
+      })
+    }
+
+    if (!Array.isArray(interests) || interests.length === 0) {
+      return response.status(400).json({
+        message: 'At least one interest is required',
+      })
+    }
+
     const userId = request.user.id
 
     const prompt = `
 Generate a ${durationDays}-day trip for ${destination}.
 
 Budget: ${budgetTier}
+
+All prices must be in INR.
+Hotel price must be per night.
 
 Interests: ${interests.join(', ')}
 
@@ -63,14 +92,21 @@ Use this format:
 
       let responseText = geminiResponse.text
 
-      console.log(responseText)
-
       responseText = responseText
         .replace(/```json/g, '')
         .replace(/```/g, '')
         .trim()
 
       result = JSON.parse(responseText)
+      if (
+        !Array.isArray(result.itinerary) ||
+        !result.estimatedBudget ||
+        !result.hotels
+      ) {
+        return response.status(500).json({
+          message: 'Failed to generate trip',
+        })
+      }
     } catch (error) {
       console.log('Gemini Error:', error.message)
 

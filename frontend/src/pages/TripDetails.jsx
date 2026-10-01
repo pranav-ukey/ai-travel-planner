@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import axios from 'axios'
-import {useParams} from 'react-router-dom'
+import {Link, useParams} from 'react-router-dom'
 
 const TripDetails = () => {
   const {id} = useParams()
@@ -39,12 +39,12 @@ const TripDetails = () => {
           Trip not found
         </h1>
 
-        <a
-          href="/dashboard"
+        <Link
+          to="/"
           className="text-blue-600 hover:underline"
         >
           Back to Dashboard
-        </a>
+        </Link>
       </div>
     )
   }
